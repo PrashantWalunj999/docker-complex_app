@@ -4,12 +4,24 @@ services:
   postgres:
     image: postgres:latest
     environment: 
-      - POSTGRES_PASSWORD=admin
+      - POSTGRES_PASSWORD=postgres_password
 
   redis:
     image: redis:latest
 
-  server:
+  nginx:
+    depends_on: 
+      - server1
+      - client
+    restart: always
+    build: 
+      context: ./nginx/
+      dockerfile: Dockerfile.dev
+    ports: 
+      - 3050:80
+  
+  #name server1 is given for confusion with nginx.We can also use name=server1
+  server1:
     build: 
       context: ./server
       dockerfile: Dockerfile.dev
